@@ -1,1 +1,57 @@
-<!-- test -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Select a Major</title>
+  <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 40px; }
+    h2 { font-size: 24px; }
+    button { margin: 10px; padding: 10px 20px; font-size: 16px; }
+    table { border-collapse: collapse; margin: 20px auto; width: 80%; }
+    th, td { border: 1px solid #000; padding: 10px; }
+    th { background-color: #eee; }
+  </style>
+</head>
+<body>
+
+  <h2>Select a Major</h2>
+  <button onclick="filterMajors('CIT')">CIT Majors</button>
+  <button onclick="filterMajors('BUS')">Business Majors</button>
+
+  <p><strong>We filter our dataset by major</strong></p>
+  <div id="studentTable"></div>
+
+  <script id="student-template" type="text/x-handlebars-template">
+    <table>
+      <tr><th>Name</th><th>Major</th><th>Midterm</th><th>Final</th></tr>
+      {{#each this}}
+        <tr>
+          <td>{{name}}</td>
+          <td>{{major}}</td>
+          <td>{{midterm}}</td>
+          <td>{{final}}</td>
+        </tr>
+      {{/each}}
+    </table>
+  </script>
+
+  <script>
+    let allStudents = [];
+
+    fetch('cit5students.json')
+      .then(response => response.json())
+      .then(data => {
+        allStudents = data;
+      });
+
+    function filterMajors(major) {
+      const filtered = allStudents.filter(s => s.major === major);
+      const source = document.getElementById('student-template').innerHTML;
+      const template = Handlebars.compile(source);
+      document.getElementById('studentTable').innerHTML = template(filtered);
+    }
+  </script>
+
+</body>
+</html>
